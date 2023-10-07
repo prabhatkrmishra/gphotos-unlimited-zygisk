@@ -14,9 +14,9 @@ Current version : **1.1-stable**
     <a href="https://github.com/sponsors/cuynu"><img src="https://img.shields.io/badge/Support%20Project-%E2%9D%A4-%23db61a2.svg?&logo=github&logoColor=white&labelColor=181717&style=flat-square" alt="Badage"></img></a>
 
 
-### [Переключиться на русский язык](https://gitlab.com/cuynu/gphotos-unlimited-zygisk/-/wiki/RU)
+### [Переключиться на русский язык](https://gitlab.com/cuynu/gphotos-unlimited-zygisk/-/wikis/RU)
 
-### [Chuyển ngôn ngữ Tiếng Việt](https://gitlab.com/cuynu/gphotos-unlimited-zygisk/-/wiki/VI)
+### [Chuyển ngôn ngữ Tiếng Việt](https://gitlab.com/cuynu/gphotos-unlimited-zygisk/-/wikis/VI)
 
 # Introduction 
 Based from Pixelify GitHub. This module will spoof your device info to Pixel XL on Google apps and Google Photos to get unlimited backup storage at original quality
