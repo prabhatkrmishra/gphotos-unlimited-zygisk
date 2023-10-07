@@ -1,7 +1,7 @@
 # Google Photos unlimited backup module
 Adds Photos features and unlimited original backup
 
-<a href="https://github.com/cuynu/gphotos-unlimited-magisk#usage">
+<a href="https://gitlab.com/cuynu/gphotos-unlimited-zygisk#usage">
 <img alt="DEMO" src="https://github.com/cuynu/gphotos-unlimited-magisk/assets/90895715/154b2d25-6341-4131-a70f-99a8a0d1740e" width="300" height="300" />
 </a>
 
@@ -27,12 +27,12 @@ Module will only works with Zygisk, it will not run with Riru, Shamiko, etc !!
 Some modules could break and prevent this module from running, if module does not work, try disable some modules and see
 
 # Usage 
-Download module from [release page](https://gitlab.com/cuynu/gphotos-unlimited-magisk/-/releases), enable Zygisk then install with Magisk v24.3+ and reboot
+Download module from [release page](https://gitlab.com/cuynu/gphotos-unlimited-zygisk/-/releases), enable Zygisk then install with Magisk v24.3+ and reboot
 
 # Known issues 
 - **Some Xiaomi devices with MIUI 14 when this module is active, its will cause Bootloop with SystemUI crash exception**
 
 # Build zygisk library
-`git clone https://gitlab.com/cuynu/gphotos-unlimited-magisk.git`
+`git clone https://gitlab.com/cuynu/gphotos-unlimited-zygisk.git`
 
 Import folder zygisk_build to Android Studio or Gradle and build then copy compiled zygisk library to zygisk folder (not zygisk_build)
