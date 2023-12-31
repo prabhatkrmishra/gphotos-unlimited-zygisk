@@ -48,6 +48,14 @@ Download module from [release page](https://gitlab.com/cuynu/gphotos-unlimited-z
 - Google Pixel 2/3/4XL/6A (Stock)
 - Samsung Galaxy S9/S10/S20/A7 2018/A03S (Stock/AOSP Android 10+)
 - iPhone 7/7 Plus (AOSP Android 10 NOT IOS)
+- Nothing Phone (1) with Nothing OS 2.5.1 CBT
+- Masstel_X9 (Stock/AOSP)
+- LG G7 ThinQ (Stock/AOSP)
+- LG G8, G8x ThinQ (Stock/AOSP)
+- LG V40, V50, V50s ThinQ (Stock/AOSP)
+- Lenovo Legion Y70 (AOSP)
+- Tecno Pova 2 (AOSP)
+- Xiaomi Qin F21 Pro (AOSP)
 
 # Build zygisk library
 `git clone https://gitlab.com/cuynu/gphotos-unlimited-zygisk.git`
