@@ -15,10 +15,6 @@ Adds Photos features and unlimited original backup
 
 Current version : **1.1-stable**
 
-### Donate this project (Not required)
-<p align="left">
-    <a href="https://github.com/sponsors/cuynu"><img src="https://img.shields.io/badge/Support%20Project-%E2%9D%A4-%23db61a2.svg?&logo=github&logoColor=white&labelColor=181717&style=flat-square" alt="Badage"></img></a>
-
 
 ### [Переключиться на русский язык](https://gitlab.com/cuynu/gphotos-unlimited-zygisk/-/wikis/RU)
 
