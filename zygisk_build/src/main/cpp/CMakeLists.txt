@@ -40,7 +40,33 @@ add_library(${MODULE_NAME}-tensor SHARED
             module.h)
 target_link_libraries(${MODULE_NAME}-tensor log)
 
-if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_custom_command(TARGET ${MODULE_NAME} POST_BUILD
-            COMMAND ${CMAKE_STRIP} --strip-all --remove-section=.comment "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/lib${MODULE_NAME}.so")
-endif ()
+# Output: out/<ABI>/*.so
+set(OUTPUT_LIB_ROOT "${CMAKE_SOURCE_DIR}/../../../../out")
+
+function(copy_and_strip_library target output_path)
+    # Ensure output directory exists
+    get_filename_component(output_dir "${output_path}" DIRECTORY)
+    add_custom_command(TARGET ${target} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E make_directory "${output_dir}"
+            VERBATIM
+    )
+
+    # Strip symbols only if CMAKE_STRIP is defined and not Debug
+    if(CMAKE_STRIP)
+        if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+            add_custom_command(TARGET ${target} POST_BUILD
+                    COMMAND "${CMAKE_STRIP}" --strip-all --remove-section=.comment "$<TARGET_FILE:${target}>"
+                    VERBATIM
+            )
+        endif()
+    endif()
+
+    # Copy the library to the desired location
+    add_custom_command(TARGET ${target} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:${target}>" "${output_path}"
+            VERBATIM
+    )
+endfunction()
+
+# Output .so → out/<ABI>/<abi>.so
+copy_and_strip_library(${MODULE_NAME} "${OUTPUT_LIB_ROOT}/${ANDROID_ABI}/${ANDROID_ABI}.so")

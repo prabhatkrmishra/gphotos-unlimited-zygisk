@@ -1,0 +1,57 @@
+out
+zygisk_build/.cxx
+
+# Android Studio
+.idea/
+*.iml
+.gradle/
+local.properties
+
+# Gradle
+/build/
+**/build/
+!gradle-wrapper.jar
+.gradle/
+.gradle-cache/
+out/
+
+# CMake + Native
+cmake-build-*/
+**/CMakeFiles/
+**/CMakeCache.txt
+**/Makefile
+**/compile_commands.json
+
+# Zygisk module output
+zip/*.zip
+zip/tmp/
+*.zip
+
+# Log files and misc
+*.log
+*.tmp
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+
+# Mac/Linux junk
+ehthumbs.db
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+*.sublime-workspace
+*.sublime-project
+
+# Windows junk
+*.vcxproj*
+*.suo
+*.user
+*.exe
+*.dll
+*.pdb
+
+# Python / script folders if used for packaging
+__pycache__/
+*.py[cod]

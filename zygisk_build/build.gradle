@@ -1,192 +1,103 @@
-import org.apache.tools.ant.filters.FixCrLfFilter
-import org.apache.tools.ant.filters.ReplaceTokens
-
-import java.security.MessageDigest
-
 plugins {
     id 'com.android.library'
 }
 
-apply from: file(rootProject.file('module.gradle'))
-
 android {
-    compileSdk target_sdk
+    namespace = 'cuynu.pixelify.photos'
+    compileSdk = 36
+
     defaultConfig {
-        minSdk min_sdk
-        targetSdk target_sdk
-        externalNativeBuild {
-            // ndkBuild {
-            //     path("src/main/cpp/external/Android.mk")
-            // }
-            cmake {
-                arguments "-DMODULE_NAME:STRING=$moduleLibraryName";
+        minSdk = 21
+        targetSdk = 36
+        versionCode = 1
+        versionName = "1.0"
+
+        ndk {
+            //noinspection ChromeOsAbiSupport
+            abiFilters "arm64-v8a", "armeabi-v7a"
+        }
+    }
+    buildTypes {
+        release {
+            debuggable false
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            externalNativeBuild {
+                cmake {
+                    arguments "-DCMAKE_BUILD_TYPE=Release",
+                            "-DMODULE_NAME:STRING=PixelifyPhotos"
+                }
+            }
+        }
+
+        debug {
+            debuggable true
+            jniDebuggable = true
+
+            externalNativeBuild {
+                cmake {
+                    arguments "-DCMAKE_BUILD_TYPE=Debug",
+                            "-DMODULE_NAME:STRING=PixelifyPhotos"
+                }
             }
         }
     }
     buildFeatures {
-        prefab false
+        prefab = false
     }
     externalNativeBuild {
         cmake {
             path "src/main/cpp/CMakeLists.txt"
         }
     }
+    ndkVersion '28.2.13676358'
 }
 
-afterEvaluate {
-    android.libraryVariants.forEach { variant ->
-        def variantCapped = variant.name.capitalize()
-        def variantLowered = variant.name.toLowerCase()
+tasks.register("copyZygiskSo", Copy) {
+    def rootOut = "$rootDir/out"
+    def rootZip = "$rootDir/zip/zygisk"
 
-        def zipName = "${magiskModuleId.replace('_', '-')}-${moduleVersion}.zip"
-        def zipNamenovk = "${magiskModuleId.replace('_', '-')}-${moduleVersion}-no-VK.zip"
-        def magiskDir = file("$outDir/magisk_module_$variantLowered")
-        def templatePath = "$rootDir/module"
-        def types = [Instance1: 'arm64-v8a', Instance2: 'armeabi-v7a',Instance3: 'x86',Instance4: 'x86_64']
+    def filesToCopy = [
+            file("$rootOut/arm64-v8a/arm64-v8a.so"),
+			file("$rootOut/armeabi-v7a/armeabi-v7a.so"),
+    ]
 
-        task("prepareMagiskFiles${variantCapped}", type: Sync) {
-            dependsOn("assemble$variantCapped")
-            def nativeOutDir = file("$rootDir/riru/build/intermediates/cmake/$variant.name/obj")
-
-            into magiskDir
-            from(templatePath) {
-                exclude 'module.prop', 'files/system'
-            }
-            from(templatePath) {
-                include 'module.prop'
-                expand([
-                        id         : magiskModuleId,
-                        name       : moduleName,
-                        version    : moduleVersion,
-                        versionCode: moduleVersionCode.toString(),
-                        author     : moduleAuthor,
-                        description: moduleDescription,
-                        volType: "1",
-                ])
-                filter(FixCrLfFilter.class,
-                        eol: FixCrLfFilter.CrLf.newInstance("lf"))
-            }
-            types.each { instance, resourceDir ->
-                from("$buildDir/intermediates/stripped_native_libs/$variantLowered/out/lib/$resourceDir") {
-                    into 'lib/zygisk'
-                    exclude "**/libpixelify-tensor.so"
-                    rename 'libpixelify.so', "${resourceDir}.so"
-                }
-                from("$buildDir/intermediates/stripped_native_libs/$variantLowered/out/lib/$resourceDir") {
-                    into 'lib/zygisk_tensor'
-                    exclude "**/libpixelify.so"
-                    rename 'libpixelify-tensor.so', "${resourceDir}.so"
-                }
-            }
-            doLast {
-                copy {
-                    from "$nativeOutDir"
-                    into "$magiskDir/lib/riru"
-                    exclude "**/*.txt" , "**/libpixelify-tensor.so"
-                }
-                copy {
-                    from "$nativeOutDir"
-                    into "$magiskDir/lib/riru_tensor"
-                    exclude "**/*.txt" , "**/libpixelify.so"
-                    rename "libpixelify-tensor.so" , "$variant.name"
-                }
-            }
-
+    doFirst {
+        def zipDir = file(rootZip)
+        if (!zipDir.exists()) {
+            println "Creating missing directory: $zipDir"
+            zipDir.mkdirs()
         }
 
-        task("novk${variantCapped}", type: Sync) {
-            dependsOn("assemble$variantCapped")
-            def nativeOutDir = file("$rootDir/riru/build/intermediates/cmake/$variant.name/obj")
-
-            into magiskDir
-            from(templatePath) {
-                exclude 'module.prop', 'files/system'
-            }
-            from(templatePath) {
-                include 'module.prop'
-                expand([
-                        id         : magiskModuleId,
-                        name       : moduleName,
-                        version    : moduleVersion,
-                        versionCode: moduleVersionCode.toString(),
-                        author     : moduleAuthor,
-                        description: moduleDescription,
-                        volType: "0",
-                ])
-                filter(FixCrLfFilter.class,
-                        eol: FixCrLfFilter.CrLf.newInstance("lf"))
-            }
-            types.each { instance, resourceDir ->
-                from("$buildDir/intermediates/stripped_native_libs/$variantLowered/out/lib/$resourceDir") {
-                    into 'lib/zygisk'
-                    exclude "**/libpixelify-tensor.so"
-                    rename 'libpixelify.so', "${resourceDir}.so"
-                }
-                from("$buildDir/intermediates/stripped_native_libs/$variantLowered/out/lib/$resourceDir") {
-                    into 'lib/zygisk_tensor'
-                    exclude "**/libpixelify.so"
-                    rename 'libpixelify-tensor.so', "${resourceDir}.so"
-                }
-            }
-            doLast {
-                copy {
-                    from "$nativeOutDir"
-                    into "$magiskDir/lib/riru"
-                    exclude "**/*.txt" , "**/libpixelify-tensor.so"
-                }
-                copy {
-                    from "$nativeOutDir"
-                    into "$magiskDir/lib/riru_tensor"
-                    exclude "**/*.txt" , "**/libpixelify.so"
-                    rename "libpixelify-tensor.so" , "libpixelify.so"
-                }
+        filesToCopy.each { srcFile ->
+            if (!srcFile.exists()) {
+                throw new GradleException("Missing .so file: $srcFile")
+            } else {
+                println "Will copy: $srcFile → $rootZip/"
             }
         }
+    }
 
-        task("zip${variantCapped}", type: Zip) {
-            dependsOn("prepareMagiskFiles${variantCapped}")
-            from magiskDir
-            archiveName zipName
-            destinationDir outDir
+    from(filesToCopy)
+    into(rootZip)
+}
+
+tasks.named("clean").configure {
+    description = "Clean the Zygisk native libraries"
+    doLast {
+        // Delete the 'out' directory in the root folder
+        def outDir = file("$rootDir/out")
+        if (outDir.exists()) {
+            println "Deleting $outDir"
+            outDir.deleteDir()
         }
 
-        task("novkzip${variantCapped}", type: Zip) {
-            dependsOn("zip${variantCapped}")
-            dependsOn("novk${variantCapped}")
-            tasks.findByName("novk${variantCapped}").mustRunAfter "zip${variantCapped}"
-            from magiskDir
-            archiveName zipNamenovk
-            destinationDir outDir
-            doLast {
-                delete {
-                    from "$outDir"
-                    include "config.prop"
-                }
-                copy {
-                    from "$templatePath"
-                    into "$outDir"
-                    include "config.prop"
-                }
-            }           
+        // Delete all .so files under zip/zygisk/
+        def soFiles = fileTree(dir: "$rootDir/module/zygisk", include: "*.so")
+        soFiles.each { file ->
+            println "Deleting: $file"
+            file.delete()
         }
-
-        task("push${variantCapped}", type: Exec) {
-            dependsOn("zip${variantCapped}")
-            workingDir outDir
-            commandLine android.adbExecutable, "push", zipName, "/data/local/tmp/"
-        }
-
-        task("flash${variantCapped}", type: Exec) {
-            dependsOn("push${variantCapped}")
-            commandLine android.adbExecutable, "shell", "su", "-c",
-                    "magisk --install-module /data/local/tmp/${zipName}"
-        }
-
-        task("flashAndReboot${variantCapped}", type: Exec) {
-            dependsOn("flash${variantCapped}")
-            commandLine android.adbExecutable, "shell", "reboot"
-        }
-
-        variant.assembleProvider.get().finalizedBy("novkzip${variantCapped}")
     }
 }
