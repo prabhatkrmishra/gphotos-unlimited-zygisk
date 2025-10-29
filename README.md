@@ -1,7 +1,7 @@
 # Google Photos unlimited backup module
 Adds Photos features and unlimited original backup
 
-Current version : **1.1-stable** [Download from releases](https://gitlab.com/cuynu/gphotos-unlimited-zygisk/-/releases)
+Current version : **1.2-stable** [Download from releases](https://github.com/prabhatkrmishra/gphotos-unlimited-zygisk/releases)
 
 ### [Chuyển ngôn ngữ Tiếng Việt](https://gitlab.com/cuynu/gphotos-unlimited-zygisk/-/wikis/VI)
 
@@ -14,7 +14,7 @@ Module will only works with Zygisk, it will not works with Riru, Shamiko, etc !!
 Some modules could break and prevent this module from running, if module does not work, try disable some modules and see.
 
 # Usage 
-Download module from [release page](https://gitlab.com/cuynu/gphotos-unlimited-zygisk/-/releases), enable Zygisk then install with Magisk v24.3+ and reboot. 
+Download module from [release page](https://github.com/prabhatkrmishra/gphotos-unlimited-zygisk/releases), enable Zygisk then install with Magisk v24.3+ and reboot. 
 
 For KernelSU/KernelSU-Next/RKSU/APatch users, **DON'T use ZygiskNext 1.0.0+** !. Instead, use [ReZygisk](https://github.com/PerformanC/ReZygisk/releases). 
 - Tested with : `Magisk v25.2+` `Magisk Delta/Kitsune` `KernelSU` `KernelSU-Next `APatch`
